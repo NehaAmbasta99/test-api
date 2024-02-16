@@ -19,7 +19,7 @@ app.put('/menu/:id', menu.updatedMenu);
 app.delete('/menu/:id', menu.deleteMenu);
 
 app.use(cors({
-    origin:['test-7yit1808t-nehaambasta99.vercel.app'],
+    origin:['https://test-api-umber-six.vercel.app/'],
     methods:["POST","GET"],
     credentials:true
 }
