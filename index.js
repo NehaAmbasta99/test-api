@@ -112,7 +112,8 @@ mongodb.set("strictQuery", false);
 mongodb.connect(dbConnectionString)
 .then(() => {
     console.log('connected to MongoDB')
-    app.listen(3000, ()=> {
+    const PORT = process.env.PORT || 5000; 
+    app.listen(PORT, ()=> {
         console.log(`Node API app is running on port 3000`)
     });
 }).catch((error) => {
