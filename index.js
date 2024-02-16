@@ -1,10 +1,12 @@
 const express = require('express')
+var cors = require('cors')
+var app = express()
 const mongodb = require('mongoose')
 const Restaurant = require('./models/restaurantModel')
 const menu = require('./menu')
 const dbConnectionString = require('./dbConnectionString')
 const Menu = require('./models/menuModel')
-const app = express()
+
 
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
@@ -15,6 +17,7 @@ app.get('/menu/:id', menu.getMenuById);
 app.post('/menu/',  menu.addMenu);
 app.put('/menu/:id', menu.updatedMenu);
 app.delete('/menu/:id', menu.deleteMenu);
+
 app.use(cors({
     origin:['test-7yit1808t-nehaambasta99.vercel.app'],
     methods:["POST","GET"],
