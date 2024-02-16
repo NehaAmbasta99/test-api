@@ -3,6 +3,7 @@ const mongodb = require('mongoose')
 const Restaurant = require('./models/restaurantModel')
 const menu = require('./menu')
 const dbConnectionString = require('./dbConnectionString')
+const Menu = require('./models/menuModel')
 const app = express()
 
 app.use(express.json())
@@ -10,11 +11,16 @@ app.use(express.urlencoded({extended: false}))
 
 
 app.get('/menu', menu.getMenu);
-// app.get('/menu/:id', menu.findById);
+app.get('/menu/:id', menu.getMenuById);
 app.post('/menu/',  menu.addMenu);
 app.put('/menu/:id', menu.updatedMenu);
 app.delete('/menu/:id', menu.deleteMenu);
-
+app.use(cors({
+    origin:['test-7yit1808t-nehaambasta99.vercel.app'],
+    methods:["POST","GET"],
+    credentials:true
+}
+));
 app.get('/',(req,res) => {
     res.send('Hello')
     })
@@ -32,7 +38,9 @@ app.get('/restaurants', async (req,res) => {
         try {
 
             const restaurant = await Restaurant.findById(req.params.id,req.body);
-            res.status(200).json(restaurant);
+            const menu = await Menu.find({});
+            const filterByRestaurantId = menu.filter(item => item.restaurantId === req.params.id);
+            res.status(200).json({menu:filterByRestaurantId, restaurant:restaurant});
         } catch (error) {
             console.log(error)
             res.status(500).json({message: error.message})
