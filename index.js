@@ -1,11 +1,13 @@
 const express = require('express')
+const dotenv = require('dotenv').config();
 var cors = require('cors')
 var app = express()
 const mongodb = require('mongoose')
 const Restaurant = require('./models/restaurantModel')
 const menu = require('./menu')
-const dbConnectionString = require('./dbConnectionString')
+const dbConnectionString = process.env.DB_CONNECTION_STRING;
 const Menu = require('./models/menuModel')
+const PORT = process.env.PORT || 3000;
 
 
 app.use(express.json())
@@ -17,6 +19,7 @@ app.get('/menu/:id', menu.getMenuById);
 app.post('/menu/',  menu.addMenu);
 app.put('/menu/:id', menu.updatedMenu);
 app.delete('/menu/:id', menu.deleteMenu);
+
 
 app.use(cors({
     origin:['https://test-api-umber-six.vercel.app/'],
@@ -112,7 +115,6 @@ mongodb.set("strictQuery", false);
 mongodb.connect(dbConnectionString)
 .then(() => {
     console.log('connected to MongoDB')
-    const PORT = process.env.PORT || 5000; 
     app.listen(PORT, ()=> {
         console.log(`Node API app is running on port 3000`)
     });
