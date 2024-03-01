@@ -1,9 +1,12 @@
 const express = require('express')
 const mongodb = require('mongoose')
 const app = express()
-
+const bodyParser = require('body-parser');
+const bcrypt = require('bcrypt');
+const saltRounds = 10; // Number of salt rounds for bcrypt
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
+app.use(bodyParser.json());
 const User = require('./models/userModel')
 
 exports.getUserById = async (req,res) => {
@@ -28,13 +31,32 @@ exports.getUser = async (req,res) => {
     }
 
     exports.addUser = async (req,res) => {
-    try{
-       const user = await User.create(req.body)
-       res.status(200).json(user)
-    }
-    catch(error){
-       console.log(error);
-    }
+            try{
+                const { username, email, password, profileImage, phoneNumber } = req.body;
+
+            // Encrypt the password using bcrypt
+            const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+            const newUser = new User({
+            username,
+            name,
+            location,
+            email,
+            password: hashedPassword,
+            profileImage: {
+                data: Buffer.from(profileImage, 'base64'),
+                contentType: 'image/jpeg',
+            },
+            phoneNumber,
+            createdAt : new Date(),
+            });
+
+            const savedUser = await newUser.save();
+            res.json(savedUser);
+        } catch (error) {
+            res.status(500).json({ error: error.message });
+        }
+    
    }
 
    exports.updatedUser = async (req,res) => {
@@ -65,4 +87,29 @@ exports.getUser = async (req,res) => {
         catch(error){
             console.log(error);
         }
+
+        exports.login = async (req,res) => {
+            try {
+                const { email, password } = req.body;
+
+                // Find the user by email
+                const user = await User.findOne({ email });
+
+                if (!user) {
+                return res.status(401).json({ error: 'Invalid email or password' });
+                }
+
+                // Compare the provided password with the stored hashed password
+                const passwordMatch = await bcrypt.compare(password, user.password);
+
+                if (!passwordMatch) {
+                return res.status(401).json({ error: 'Invalid email or password' });
+                }
+
+                res.json({ message: 'Login successful' });
+            } catch (error) {
+                res.status(500).json({ error: error.message });
+            }
+        }
+
     }

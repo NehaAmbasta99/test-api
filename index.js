@@ -5,6 +5,7 @@ var app = express()
 const mongodb = require('mongoose')
 const Restaurant = require('./models/restaurantModel')
 const menu = require('./menu')
+const todo = require('./todo')
 const user = require('./user')
 const dbConnectionString = process.env.DB_CONNECTION_STRING;
 const Menu = require('./models/menuModel')
@@ -25,6 +26,14 @@ app.get('/user/:id', user.getUserById);
 app.post('/user/',  user.addUser);
 app.put('/user/:id', user.updatedUser);
 app.delete('/user/:id', user.deleteUser);
+// app.post('/login',  user.login);
+
+app.get('/todo', todo.getTodo);
+app.post('/todo/',  todo.addTodo);
+app.delete('/todo/:id', todo.deleteTodo);
+
+
+
 
 
 app.use(cors());
