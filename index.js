@@ -27,12 +27,7 @@ app.put('/user/:id', user.updatedUser);
 app.delete('/user/:id', user.deleteUser);
 
 
-app.use(cors({
-    origin:['https://test-api-umber-six.vercel.app/', 'https://bitsnpieces.vercel.app/', 'http://localhost:4200/'],
-    methods:["POST","GET","PUT", "DELETE"],
-    credentials:true
-}
-));
+app.use(cors());
 app.get('/',(req,res) => {
     res.send('Hello')
     })
