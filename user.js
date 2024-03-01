@@ -32,7 +32,7 @@ exports.getUser = async (req,res) => {
 
     exports.addUser = async (req,res) => {
             try{
-                const { username, email, password, profileImage, phoneNumber } = req.body;
+                const { username, email, password, profileImage, phoneNumber, name, location } = req.body;
 
             // Encrypt the password using bcrypt
             const hashedPassword = await bcrypt.hash(password, saltRounds);
