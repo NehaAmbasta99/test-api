@@ -5,10 +5,10 @@ var app = express()
 const mongodb = require('mongoose')
 const Restaurant = require('./models/restaurantModel')
 const menu = require('./menu')
+const user = require('./user')
 const dbConnectionString = process.env.DB_CONNECTION_STRING;
 const Menu = require('./models/menuModel')
 const PORT = process.env.PORT || 3000;
-
 
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
@@ -20,10 +20,16 @@ app.post('/menu/',  menu.addMenu);
 app.put('/menu/:id', menu.updatedMenu);
 app.delete('/menu/:id', menu.deleteMenu);
 
+app.get('/user', user.getUser);
+app.get('/user/:id', user.getUserById);
+app.post('/user/',  user.addUser);
+app.put('/user/:id', user.updatedUser);
+app.delete('/user/:id', user.deleteUser);
+
 
 app.use(cors({
-    origin:['https://test-api-umber-six.vercel.app/'],
-    methods:["POST","GET"],
+    origin:['https://test-api-umber-six.vercel.app/', 'https://bitsnpieces.vercel.app/', 'http://localhost:4200/'],
+    methods:["POST","GET","PUT", "DELETE"],
     credentials:true
 }
 ));
