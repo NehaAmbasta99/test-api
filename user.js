@@ -8,7 +8,7 @@ const upload = multer({ storage: storage });
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const saltRounds = 10; // Number of salt rounds for bcrypt
-app.use(cors);
+app.use(cors());
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 app.use(bodyParser.json());
