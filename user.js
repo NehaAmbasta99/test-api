@@ -1,12 +1,19 @@
 const express = require('express')
 const mongodb = require('mongoose')
 const app = express()
+const multer = require('multer');
+const storage = multer.memoryStorage(); 
+const upload = multer({ storage: storage });
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const saltRounds = 10; // Number of salt rounds for bcrypt
+
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 app.use(bodyParser.json());
+
+
+
 const User = require('./models/userModel')
 
 exports.getUserById = async (req,res) => {
@@ -32,10 +39,19 @@ exports.getUser = async (req,res) => {
 
     exports.addUser = async (req,res) => {
             try{
-                const { username, email, password, profileImage, phoneNumber, name, location } = req.body;
-
+                const { username, email, password, phoneNumber, name, location } = req.body;
+                const file = req.file;
+                if (!file) {
+                    return res.status(400).send('No file uploaded.');
+                  }
+                // console.log('reached' + req.file);
             // Encrypt the password using bcrypt
             const hashedPassword = await bcrypt.hash(password, saltRounds);
+            const profileImage = {
+                name: file.originalname,
+                data: file.buffer,
+                contentType: file.mimetype,
+              };
 
             const newUser = new User({
             username,
@@ -43,11 +59,8 @@ exports.getUser = async (req,res) => {
             location,
             email,
             password: hashedPassword,
-            profileImage: {
-                data: Buffer.from(profileImage, 'base64'),
-                contentType: 'image/jpeg',
-            },
             phoneNumber,
+            profileImage,
             createdAt : new Date(),
             });
 
